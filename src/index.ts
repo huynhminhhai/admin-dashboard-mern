@@ -11,7 +11,6 @@ import generalRoutes from '~/routes/general.routes'
 import managementRoutes from '~/routes/management.routes'
 import salesRoutes from '~/routes/sales.routes'
 import { envConfig } from '~/constants/config'
-import { error } from 'console'
 
 dotenv.config()
 
