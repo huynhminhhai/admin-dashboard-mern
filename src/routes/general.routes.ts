@@ -5,6 +5,11 @@ import { wrapRequestHandler } from '~/utils/handler'
 
 const generalRoutes = Router()
 
+/**
+ * Desc: Get user by id
+ * Path: /user/:id
+ * Method: GET
+ */
 generalRoutes.get('/user/:id', getUserValidator, wrapRequestHandler(getUserController))
 
 export default generalRoutes
