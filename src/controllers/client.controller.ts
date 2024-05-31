@@ -22,3 +22,23 @@ export const getProductsController = async (
     }
   })
 }
+
+export const getCustomersController = async (
+  req: Request<ParamsDictionary, any, any, PaginationRequestQuery>,
+  res: Response
+) => {
+  const limit = Number(req.query.limit)
+  const page = Number(req.query.page)
+
+  const result = await clientService.getCustomers({ limit, page })
+
+  return res.json({
+    message: 'Get list customer success',
+    data: {
+      users: result.users,
+      limit,
+      page,
+      totalPage: Math.ceil(result.total / limit)
+    }
+  })
+}

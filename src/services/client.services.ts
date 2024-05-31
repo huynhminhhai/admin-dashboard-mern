@@ -1,4 +1,5 @@
 import Product from '~/models/schemas/Product.schemas'
+import User from '~/models/schemas/User.schemas'
 
 class ClientService {
   async getProducts({ limit, page }: { limit: number; page: number }) {
@@ -69,6 +70,49 @@ class ClientService {
     ])
 
     return { productWithStat, total: total[0].total }
+  }
+
+  async getCustomers({ limit, page }: { limit: number; page: number }) {
+    const [users, total] = await Promise.all([
+      User.aggregate([
+        {
+          $match: {
+            role: 'user'
+          }
+        },
+        // {
+        //   $skip: 0
+        // },
+        // {
+        //   $limit: 10
+        // },
+        {
+          $project: {
+            password: 0
+          }
+        }
+      ]),
+      User.aggregate([
+        {
+          $match: {
+            role: 'user'
+          }
+        },
+        {
+          $project: {
+            password: 0
+          }
+        },
+        {
+          $count: 'total'
+        }
+      ])
+    ])
+
+    return {
+      users,
+      total: total[0].total
+    }
   }
 }
 
