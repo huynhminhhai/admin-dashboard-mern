@@ -1,4 +1,5 @@
 import Product from '~/models/schemas/Product.schemas'
+import Transaction from '~/models/schemas/Transaction.schemas'
 import User from '~/models/schemas/User.schemas'
 
 class ClientService {
@@ -69,7 +70,7 @@ class ClientService {
       ])
     ])
 
-    return { productWithStat, total: total[0].total }
+    return { productWithStat, total: total[0]?.total | 0 }
   }
 
   async getCustomers({ limit, page }: { limit: number; page: number }) {
@@ -111,8 +112,40 @@ class ClientService {
 
     return {
       users,
-      total: total[0].total
+      total: total[0]?.total | 0
     }
+  }
+
+  async getTransactions({ limit, page, search }: { limit: number; page: number; search: string }) {
+    console.log(search)
+
+    const [transactions, total] = await Promise.all([
+      Transaction.aggregate([
+        {
+          $match: {
+            $or: [{ cost: { $regex: new RegExp(search, 'i') } }, { userId: { $regex: new RegExp(search, 'i') } }]
+          }
+        },
+        {
+          $skip: limit * (page - 1)
+        },
+        {
+          $limit: limit
+        }
+      ]),
+      Transaction.aggregate([
+        {
+          $match: {
+            $or: [{ cost: { $regex: new RegExp(search, 'i') } }, { userId: { $regex: new RegExp(search, 'i') } }]
+          }
+        },
+        {
+          $count: 'total'
+        }
+      ])
+    ])
+
+    return { transactions, total: total[0]?.total | 0 }
   }
 }
 

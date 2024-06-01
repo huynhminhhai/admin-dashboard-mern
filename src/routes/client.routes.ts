@@ -1,5 +1,9 @@
 import { Router } from 'express'
-import { getCustomersController, getProductsController } from '~/controllers/client.controller'
+import {
+  getCustomersController,
+  getProductsController,
+  getTransactionController
+} from '~/controllers/client.controller'
 import { paginationValidator } from '~/middlewares/client.middlewares'
 import { wrapRequestHandler } from '~/utils/handler'
 
@@ -20,5 +24,13 @@ clientRoutes.get('/products', paginationValidator, wrapRequestHandler(getProduct
  * Query: {limit: number, page: number}
  */
 clientRoutes.get('/customers', paginationValidator, wrapRequestHandler(getCustomersController))
+
+/**
+ * Desc: get list transaction
+ * Path: /transactions
+ * Method: GET
+ * Query: {limit: number, page: number, search: string}
+ */
+clientRoutes.get('/transactions', paginationValidator, wrapRequestHandler(getTransactionController))
 
 export default clientRoutes
